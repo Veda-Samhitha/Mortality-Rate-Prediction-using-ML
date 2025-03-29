@@ -1,0 +1,17 @@
+import pandas as pd
+
+df = pd.read_excel("COVID Vaccinations-CSE Test.xlsx", sheet_name="Sheet1")
+
+df = df.drop(columns=["iso_code", "tests_units"])
+
+threshold = len(df) * 0.6
+df = df.dropna(thresh=threshold, axis=1)
+
+df = df.fillna(df.mean(numeric_only=True))
+
+if 'positive_rate' in df.columns and 'stringency_index' in df.columns:
+    df['covid_impact_score'] = df['positive_rate'] * df['stringency_index']
+
+df.to_excel("Cleaned_COVID_Output.xlsx", index=False)
+
+print(" Data cleaning complete. Saved to Cleaned_COVID_Output.xlsx")
